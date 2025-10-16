@@ -34,7 +34,6 @@
     .hr{ height:1px; background:var(--ring); margin:12px 0 }
     .chips{ display:flex; gap:8px; flex-wrap:wrap }
     .chip{ background:#eef2ff; color:#3730a3; border:1px solid #c7d2fe; padding:4px 8px; border-radius:999px; font-size:12px }
-    .input{ width:100%; padding:10px 12px; border:1px solid var(--ring); border-radius:10px; background:#fff }
     .success{ display:none; background:#ecfdf5; border:1px solid #bbf7d0; color:#065f46; border-radius:12px; padding:12px }
     .error{ display:none; background:#fef2f2; border:1px solid #fecaca; color:#991b1b; border-radius:12px; padding:12px }
   </style>
@@ -46,7 +45,7 @@
         <img src="lulilogo_full.png" alt="LuliDigital logo">
         <div>
           <h1>LuliDigital — Build Your Package for <span style="color:#1F4E79">RozvyEstate</span></h1>
-          <p class="lead">Tailored quote for RozvyEstate. Choose what you need and tap <b>Submit</b>. We’ll confirm details by email.</p>
+          <p class="lead">This internal quote page is tailored for RozvyEstate. Select items below and tap <b>Submit</b> — the quote will be sent directly to LuliDigital.</p>
         </div>
       </div>
 
@@ -63,28 +62,18 @@
             <div class="hr"></div>
             <h2>3) Optional Add-Ons</h2>
             <div id="addonsList" style="display:grid;gap:10px"></div>
-
-            <div class="hr"></div>
-            <h2>4) Your Details</h2>
-            <div style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
-              <input class="input" id="name" placeholder="Full name *" required>
-              <input class="input" id="email" placeholder="Email *" required>
-              <input class="input" id="company" placeholder="Company (optional)">
-              <input class="input" id="phone" placeholder="Phone / WhatsApp (optional)">
-            </div>
-            <textarea id="notes" rows="3" class="input" style="margin-top:10px" placeholder="Notes (optional)"></textarea>
           </div>
 
           <aside class="totals">
             <div class="panel">
-              <h2>Quote Summary for RozvyEstate</h2>
+              <h2>RozvyEstate Quote Summary</h2>
               <div class="row"><span>Setup Total</span><span id="setupTotal" class="sum">R0</span></div>
               <div class="row"><span>Monthly Total</span><span id="monthlyTotal" class="sum">R0</span></div>
               <div class="row"><span>Upfront (70%)</span><span id="upfront" class="good">R0</span></div>
               <div class="row"><span>Due at Launch</span><span id="launch">R0</span></div>
               <div class="hr"></div>
               <div>
-                <div class="muted">Selected setup:</div>
+                <div class="muted">Setup:</div>
                 <div id="chips-setup" class="chips" style="margin:6px 0 10px"></div>
                 <div class="muted">Monthly plan:</div>
                 <div id="chips-monthly" class="chips" style="margin:6px 0 10px"></div>
@@ -96,8 +85,8 @@
                 Submit
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 5l7 7-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
-              <div id="ok" class="success" style="margin-top:10px">Thank you! Your quote was submitted. We’ll email you shortly.</div>
-              <div id="err" class="error" style="margin-top:10px">Sorry, something went wrong. Please try again.</div>
+              <div id="ok" class="success" style="margin-top:10px">Quote submitted successfully. Check your inbox.</div>
+              <div id="err" class="error" style="margin-top:10px">Error sending quote. Please try again.</div>
             </div>
           </aside>
         </div>
@@ -106,10 +95,10 @@
   </div>
 
   <script>
-    // ===== CONFIG =====
     const COMPANY = "RozvyEstate";
     const EMAIL_SUBJECT = "New LuliDigital Quote — RozvyEstate";
     const FORMSPREE_ENDPOINT = "https://formspree.io/f/xanpavld";
+    const RECIPIENT = "fikerzabate16@gmail.com";
 
     const currency = new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR',maximumFractionDigits:0});
 
@@ -123,16 +112,16 @@
     ];
 
     const MONTHLY = [
-      { id:'starter', name:'Starter Growth', price:6500, desc:'FB + IG + Google, 8 posts, 1 ad, site check & report.' },
-      { id:'expand',  name:'Social Expansion', price:9800, desc:'FB + IG + TikTok + Google Ads, 12 posts, 2 ads, engagement.' },
-      { id:'full',    name:'Full Digital Growth', price:13500, desc:'All platforms + SEO + site mgmt, 16 posts, 3 ads, blog + strategy.' },
-      { id:'hybrid',  name:'B2B + Retail Hybrid', price:16500, desc:'Everything + wholesale leadgen, email & WhatsApp, AM support.' },
+      { id:'starter', name:'Starter Growth', price:6500 },
+      { id:'expand',  name:'Social Expansion', price:9800 },
+      { id:'full',    name:'Full Digital Growth', price:13500 },
+      { id:'hybrid',  name:'B2B + Retail Hybrid', price:16500 },
     ];
 
     const ADDONS = [
-      { id:'shoot', name:'Product & Farm Photoshoot (15 images)', price:1800 },
-      { id:'shorts', name:'Short-form Video Content (5 clips)', price:2200 },
-      { id:'email', name:'Email Automation (flows setup)', price:950 },
+      { id:'shoot', name:'Product & Farm Photoshoot', price:1800 },
+      { id:'shorts', name:'Short-form Video Content', price:2200 },
+      { id:'email', name:'Email Automation', price:950 },
       { id:'influ', name:'Influencer Partnership Outreach', price:1500 },
     ];
 
@@ -185,11 +174,8 @@
     document.addEventListener('input', recalc);
     recalc();
 
-    // ===== Submit to Formspree (backend email to you) =====
+    // ===== Submit directly to Formspree =====
     q('#submitBtn').addEventListener('click', async ()=>{
-      if(!q('#name').value.trim() || !q('#email').value.trim()){
-        alert('Please enter your name and email.'); return;
-      }
       const setupSel   = selectedFrom(SETUP, 'input[name="setup"]');
       const addonsSel  = selectedFrom(ADDONS, 'input[name="addons"]');
       const monthlySel = selectedRadio(MONTHLY, 'input[name="monthly"]');
@@ -199,15 +185,8 @@
 
       const payload = {
         _subject: EMAIL_SUBJECT,
-        _replyto: q('#email').value,
-        source_url: location.href,
-
+        to: RECIPIENT,
         companyTarget: COMPANY,
-        client_name: q('#name').value,
-        client_email: q('#email').value,
-        client_company: q('#company').value,
-        client_phone: q('#phone').value,
-        notes: q('#notes').value,
         selected_setup:  setupSel.map(i=>`${i.name} (R${i.price})`).join(', ') || 'None',
         selected_addons: addonsSel.map(i=>`${i.name} (R${i.price})`).join(', ') || 'None',
         selected_monthly: monthlySel ? `${monthlySel.name} (R${monthlySel.price})` : 'None',
