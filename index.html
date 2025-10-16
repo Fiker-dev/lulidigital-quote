@@ -85,8 +85,12 @@
                 Submit
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 5l7 7-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
-              <div id="ok" class="success" style="margin-top:10px">Quote submitted successfully. Check your inbox.</div>
-              <div id="err" class="error" style="margin-top:10px">Error sending quote. Please try again.</div>
+              <div id="ok" class="success" style="margin-top:10px">
+                Quote submitted successfully. We will get back to you shortly.
+              </div>
+              <div id="err" class="error" style="margin-top:10px">
+                Error sending quote. Please try again.
+              </div>
             </div>
           </aside>
         </div>
@@ -103,12 +107,12 @@
     const currency = new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR',maximumFractionDigits:0});
 
     const SETUP = [
-      { id:'brand',  name:'Brand Launch & Strategy', price:4500, desc:'Positioning, audience, tone, competitor audit.' },
-      { id:'shopify',name:'Shopify Website',         price:6000, desc:'Homepage, catalog, checkout, delivery, WhatsApp, analytics.' },
-      { id:'b2b',    name:'B2B Portal',              price:3900, desc:'Wholesale login, bulk pricing, lead capture.' },
-      { id:'social', name:'Social & Google Setup',   price:3500, desc:'FB, IG, TikTok, GBP, pixels & linking.' },
-      { id:'seo',    name:'SEO Foundation',          price:2800, desc:'Keywords, meta, alt-text, sitemap.' },
-      { id:'ads',    name:'Google Ads & Analytics',  price:2500, desc:'Account, conversion tracking, first campaign.' },
+      { id:'brand',  name:'Brand Launch & Strategy', price:4500 },
+      { id:'shopify',name:'Shopify Website', price:6000 },
+      { id:'b2b',    name:'B2B Portal', price:3900 },
+      { id:'social', name:'Social & Google Setup', price:3500 },
+      { id:'seo',    name:'SEO Foundation', price:2800 },
+      { id:'ads',    name:'Google Ads & Analytics', price:2500 },
     ];
 
     const MONTHLY = [
@@ -136,7 +140,7 @@
         const wrap = el('div',{className:'option'});
         const input = el('input',{type:type==='monthly'?'radio':'checkbox', id, name:type, value:item.id});
         const lab = el('label',{htmlFor:id});
-        lab.innerHTML = `<b>${item.name}</b><div class="muted">${item.desc||''}</div>`;
+        lab.innerHTML = `<b>${item.name}</b>`;
         const price = el('div',{className:'price'}, currency.format(item.price));
         wrap.append(input, lab, price);
         target.append(wrap);
@@ -174,7 +178,7 @@
     document.addEventListener('input', recalc);
     recalc();
 
-    // ===== Submit directly to Formspree =====
+    // ===== Submit to Formspree =====
     q('#submitBtn').addEventListener('click', async ()=>{
       const setupSel   = selectedFrom(SETUP, 'input[name="setup"]');
       const addonsSel  = selectedFrom(ADDONS, 'input[name="addons"]');
